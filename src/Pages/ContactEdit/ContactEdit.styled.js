@@ -22,26 +22,24 @@ export const InputWrapper = styled.div`
 `;
 
 export const Button = styled.button`
-  display: block;
-  padding: 8px;
-  min-width: 50px;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 50%;
+  padding: 12px;
+  align-self: flex-start;
+  margin-left: 55px;
+  margin-top: 15px;
+  min-width: 105px;
+  background-color: rgb(102, 102, 102);
+  color: #fff;
+  border-radius: 4px;
   border: none;
-  background: transparent;
-  text-align: center;
-  color: ${({ theme }) => theme.colors.textPrimary};
+  outline: none;
   cursor: pointer;
-  transition: transform 250ms ease-in-out, color 250ms ease-in-out;
+  transition: box-shadow 250ms ease-in-out;
 
   &:hover {
-    color: #47a76a;
-    transform: scale(1.1);
+    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
   }
 
   &:active {
-    color: #47a76a;
-    transform: scale(1.1);
+    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
   }
 `;

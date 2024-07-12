@@ -1,16 +1,16 @@
-import { ErrorMessage, Field, Formik } from 'formik';
-import { nanoid } from 'nanoid';
-import { FiUserPlus } from 'react-icons/fi';
-import * as Yup from 'yup';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { updateContact, updatePhonebook } from 'redux/contactsSlice';
 import {
   StyledForm,
   Wrapper,
   Button,
   InputWrapper,
-} from './ContactsForm.styled';
+} from './ContactEdit.styled';
+import { ErrorMessage, Field, Formik } from 'formik';
+import * as Yup from 'yup';
 import { PatternFormat } from 'react-number-format';
-import { useDispatch, useSelector } from 'react-redux';
-import { addNewContact, updatePhonebook } from 'redux/contactsSlice';
 import { TextField } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
@@ -21,14 +21,19 @@ const ContactsSchema = Yup.object().shape({
   number: Yup.string().required('* Phone number is required'),
 });
 
-const initialValues = { name: '', number: '' };
-
-export const ContactsForm = () => {
+const ContactEdit = () => {
   const allcontacts = useSelector(updatePhonebook);
+  const { id } = useParams();
+  const currentContact = allcontacts.find(contact => contact.id === id);
 
   const dispatch = useDispatch();
 
-  const handleSubmit = (values, { resetForm }) => {
+  const initialValues = {
+    name: currentContact ? currentContact.name : '',
+    number: currentContact ? currentContact.number : '',
+  };
+
+  const handleSubmit = values => {
     if (allcontacts.find(contact => contact.name === values.name)) {
       return alert(`${values.name} is already in contacts`);
     }
@@ -37,17 +42,19 @@ export const ContactsForm = () => {
       return alert(`${values.number} is already in contacts`);
     }
 
-    dispatch(addNewContact({ ...values, id: nanoid() }));
+    const updatedContact = { name: values.name, number: values.number, id };
+
+    dispatch(updateContact(updatedContact));
+
     toast.success(
       <div>
-        <b>{values.name}</b> added in phonebook
+        Contact <b>{values.name}</b> updated!
       </div>,
       {
         duration: 4000,
         icon: '✅',
       }
     );
-    resetForm();
   };
 
   return (
@@ -80,7 +87,7 @@ export const ContactsForm = () => {
               name="number"
               variant="standard"
               style={{ width: '300px' }}
-              format="+63 (###) ### ## ##"
+              format="+38 (0##) ### ## ##"
               allowEmptyFormatting={true}
               mask="_"
             />
@@ -91,11 +98,11 @@ export const ContactsForm = () => {
             style={{ color: 'red' }}
           />
 
-          <Button type="submit">
-            <FiUserPlus size={26} />
-          </Button>
+          <Button type="submit">Edit</Button>
         </StyledForm>
       </Formik>
     </Wrapper>
   );
 };
+
+export default ContactEdit;

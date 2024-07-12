@@ -1,78 +1,36 @@
-import { useState, useEffect } from "react";
-import { ContactsForm } from '../ContactsForm/ContactsForm';
-import { Filter } from '../Filter/Filter';
-import { ContactList } from '../ContactsList/ContactsList';
-import { AppWrapper,Title, SearchWrapper, StyledTitles, CloseBtn, OpenPhonebook } from './app.styled';
+import {lazy} from 'react'
+import { Route, Routes } from "react-router-dom";
+import { Layout } from "components/Layout/Layout";
+// import Home from 'Pages/Home';
+// import AddContacts from 'Pages/AddContacts/AddContacts';
+// import ContactDetails from "Pages/ContactDetails/ContactDetails";
+// import  PhoneView  from "Pages/PhoneView/PhoneView";
+// import  ContactEdit  from "Pages/ContactEdit/ContactEdit";
 
 
-const localStorageKey = 'contacts'
+const Home = lazy(() => import('../../Pages/Home'));
+const ContactDetails = lazy(() => import('../../Pages/ContactDetails/ContactDetails'));
+const PhoneView = lazy(() => import('../../Pages/PhoneView/PhoneView'));
+const ContactEdit = lazy(() => import('../../Pages/ContactEdit/ContactEdit'));
+const AddContacts = lazy(() => import('../../Pages/AddContacts/AddContacts'));
+
 
 export const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    const savedContacts = localStorage.getItem(localStorageKey);
-    if (savedContacts !== null) {
-      return JSON.parse(savedContacts);
-    }
-    return [];
-  });
-  const [filter, setFilter] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(( ) => {
-      localStorage.setItem(localStorageKey, JSON.stringify(contacts));
-  }, [contacts]);
-  
-
-
-
-    const addContact = (newContact) => {
-    if (contacts.find(contact => contact.name === newContact.name)) {
-      return alert(`${newContact.name} is already in contacts`);
-    }
-      
-    if (contacts.find(contact => contact.number === newContact.number)) {
-      return alert(`${newContact.number} is already in contacts`);
-    }
-      setContacts(prevState => [...prevState, newContact]);
-  };
-
-
-  const getContact = evt => {
-    const searchQuerry = evt.currentTarget.value;
-    setFilter(searchQuerry)
     
-  }
-  
-  const removeContact = contactId => {
-    setContacts(prevState => prevState.filter(contact => contact.id !== contactId));
-  };
-
-  const showPhonebook = () => {
-    setIsOpen(true)
-  };
-
-  const hidePhonebook = () => {
-      setIsOpen(false)
-  };
-
-    const filteredContacts = contacts.filter(({ name }) => name.toLowerCase().includes(filter.toLocaleLowerCase()));
     return (
       <>
-        {!isOpen && <OpenPhonebook onClick={showPhonebook} className="phoneBook">Open Phonebook</OpenPhonebook>}
-        {isOpen &&
-          <AppWrapper>
-            <CloseBtn onClick={hidePhonebook}/>
-            <ContactsForm onAdd={ addContact } />
-            <SearchWrapper>
-              <StyledTitles>
-                <Title>Contacts</Title>
-                <p>Find contacts by name</p>
-              </StyledTitles>
-              <Filter filter={ filter } getContact={getContact}  />
-              <ContactList filteredContacts={filteredContacts} removeContact={ removeContact} />
-            </SearchWrapper>
-        </AppWrapper>
-        }
-        </>
+        <Routes>
+          <Route path="/" element={ <Layout /> }>
+            <Route index element={ <Home /> } />
+            <Route path="contact/:id" element={ <ContactDetails /> } >
+              <Route index element={ <PhoneView/>} />
+              <Route path="edit" element={ <ContactEdit/>} />
+            </Route>
+            <Route path="addContact" element={ <AddContacts />} />
+          </Route>
+        </Routes>
+      </>
     )
 }
+
+
