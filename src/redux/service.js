@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// axios.defaults.baseURL = `https://6507561d3a38daf4803f70fa.mockapi.io`;
-axios.defaults.baseURL = `https://669c86c115704bb0e303a6ac.mockapi.io`;
+axios.defaults.baseURL = `https://6507561d3a38daf4803f70fa.mockapi.io`;
+// axios.defaults.baseURL = `https://669c86c115704bb0e303a6ac.mockapi.io`;
 
 
 export const fetchContacts = async () => {
