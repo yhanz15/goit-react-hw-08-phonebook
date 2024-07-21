@@ -1,13 +1,11 @@
 import { FiPhone } from 'react-icons/fi';
 import { DetailsWrapper, PhoneNumberWrapper } from './PhoneView.styled';
-import { updatePhonebook } from 'redux/contactsSlice';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+
+import { selectContactById } from 'redux/selectors';
 
 const PhoneView = () => {
-  const contacts = useSelector(updatePhonebook);
-  const { id } = useParams();
-  const currentContact = contacts.find(contact => contact.id === id);
+  const currentContact = useSelector(selectContactById);
 
   return (
     <div>

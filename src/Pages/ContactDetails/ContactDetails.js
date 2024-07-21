@@ -1,6 +1,7 @@
-import { Suspense, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectContactById } from 'redux/selectors';
 import {
   BackBtn,
   AvatarWrapper,
@@ -11,21 +12,26 @@ import {
   RemoveButton,
   EditBtnWrapper,
   EditButton,
+  Name,
 } from './ContactDetails.styled';
 import { TbArrowBackUp } from 'react-icons/tb';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { removeContact, updatePhonebook } from 'redux/contactsSlice';
+import { getContactById, removeContact } from 'redux/thunk';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const ContactDetails = () => {
   const location = useLocation();
   const { id } = useParams();
-  const contacts = useSelector(updatePhonebook);
-  const navigate = useNavigate();
+
+  const currentContact = useSelector(selectContactById);
 
   const dispatch = useDispatch();
 
-  const currentContact = contacts.find(contact => contact.id === id);
+  useEffect(() => {
+    dispatch(getContactById(id));
+  }, [dispatch, id]);
+
+  const navigate = useNavigate();
 
   const backLinkLocation = useRef(location.state?.from ?? '/');
 
@@ -42,6 +48,21 @@ const ContactDetails = () => {
     navigate(`edit`, { state: { from: location } });
   };
 
+  if (!currentContact) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          marginTop: '100px',
+        }}
+      >
+        <div style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+          <CircularProgress color="success" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <TopContent>
@@ -54,7 +75,7 @@ const ContactDetails = () => {
             <AccountCircleIcon sx={{ fontSize: '210px', color: '#7E57C2' }} />
           </Avatar>
           <div>
-            <h2>{currentContact.name}</h2>
+            <Name>{currentContact.name}</Name>
           </div>
         </AvatarWrapper>
 

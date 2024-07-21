@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { updateContact, updatePhonebook } from 'redux/contactsSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import { selectCurrentContact } from 'redux/selectors';
 import {
   StyledForm,
   Wrapper,
@@ -15,6 +15,7 @@ import { TextField } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
 import toast from 'react-hot-toast';
+import { editContact } from 'redux/thunk';
 
 const ContactsSchema = Yup.object().shape({
   name: Yup.string().required('* Name is required'),
@@ -22,10 +23,12 @@ const ContactsSchema = Yup.object().shape({
 });
 
 const ContactEdit = () => {
-  const allcontacts = useSelector(updatePhonebook);
   const { id } = useParams();
-  const currentContact = allcontacts.find(contact => contact.id === id);
+  const currentContact = useSelector(state =>
+    selectCurrentContact(state, { id })
+  );
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const initialValues = {
@@ -34,17 +37,11 @@ const ContactEdit = () => {
   };
 
   const handleSubmit = values => {
-    if (allcontacts.find(contact => contact.name === values.name)) {
-      return alert(`${values.name} is already in contacts`);
-    }
-
-    if (allcontacts.find(contact => contact.number === values.number)) {
-      return alert(`${values.number} is already in contacts`);
-    }
-
     const updatedContact = { name: values.name, number: values.number, id };
 
-    dispatch(updateContact(updatedContact));
+    dispatch(editContact(updatedContact));
+
+    navigate(-1);
 
     toast.success(
       <div>
@@ -66,27 +63,25 @@ const ContactEdit = () => {
       >
         <StyledForm autoComplete="off">
           <InputWrapper>
-            <PersonOutlineIcon sx={{ fontSize: 36 }} />
+            <PersonOutlineIcon />
             <Field
               as={TextField}
               label="Name"
               name="name"
               multiline
               variant="standard"
-              style={{ width: '300px' }}
               className="fieldName"
             />
           </InputWrapper>
           <ErrorMessage name="name" component="span" style={{ color: 'red' }} />
 
           <InputWrapper>
-            <PhoneEnabledIcon sx={{ fontSize: 36 }} />
+            <PhoneEnabledIcon />
             <Field
               as={PatternFormat}
               customInput={TextField}
               name="number"
               variant="standard"
-              style={{ width: '300px' }}
               format="+38 (0##) ### ## ##"
               allowEmptyFormatting={true}
               mask="_"

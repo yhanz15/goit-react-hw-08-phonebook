@@ -16,8 +16,10 @@ import {
 } from './ContactsList.styled';
 import Avatar from '@mui/material/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeContact, updatePhonebook } from 'redux/contactsSlice';
+import { getAllContactsThunk, removeContact } from 'redux/thunk';
+import { selectTotalContacts, selectFilteredByName } from 'redux/selectors';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function getRandomHexColor() {
   const letters = '0123456789ABCDEF';
@@ -29,18 +31,18 @@ function getRandomHexColor() {
 }
 
 export const ContactList = ({ stateItem }) => {
-  const contactsAmount = useSelector(state => state.contacts.items.length);
-  const contacts = useSelector(updatePhonebook);
-  const nameFromFilter = useSelector(state => state.filter);
-  const filteredContacts = contacts.filter(({ name }) =>
-    name.toLowerCase().includes(nameFromFilter.toLowerCase())
-  );
+  const contactsAmount = useSelector(selectTotalContacts);
+  const filteredContacts = useSelector(selectFilteredByName);
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  const handleContactClick = contactId => {
+  useEffect(() => {
+    dispatch(getAllContactsThunk());
+  }, [dispatch]);
+
+  const handleContactDetailsClick = contactId => {
     navigate(`contact/${contactId}`, { state: stateItem });
   };
 
@@ -69,7 +71,7 @@ export const ContactList = ({ stateItem }) => {
             return (
               <TableRawContent
                 key={contact.id}
-                onClick={() => handleContactClick(contact.id)}
+                onClick={() => handleContactDetailsClick(contact.id)}
               >
                 <TableDataName>
                   <Avatar

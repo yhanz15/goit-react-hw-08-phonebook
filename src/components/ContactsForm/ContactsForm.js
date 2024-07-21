@@ -1,5 +1,4 @@
 import { ErrorMessage, Field, Formik } from 'formik';
-import { nanoid } from 'nanoid';
 import { FiUserPlus } from 'react-icons/fi';
 import * as Yup from 'yup';
 import {
@@ -10,12 +9,15 @@ import {
 } from './ContactsForm.styled';
 import { PatternFormat } from 'react-number-format';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewContact, updatePhonebook } from 'redux/contactsSlice';
+import { addNewContact } from 'redux/thunk';
+import { selectContacts } from 'redux/selectors';
 import { TextField } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
+// ====== Validation ========= //
 const ContactsSchema = Yup.object().shape({
   name: Yup.string().required('* Name is required'),
   number: Yup.string().required('* Phone number is required'),
@@ -24,8 +26,8 @@ const ContactsSchema = Yup.object().shape({
 const initialValues = { name: '', number: '' };
 
 export const ContactsForm = () => {
-  const allcontacts = useSelector(updatePhonebook);
-
+  const allcontacts = useSelector(selectContacts);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSubmit = (values, { resetForm }) => {
@@ -37,7 +39,9 @@ export const ContactsForm = () => {
       return alert(`${values.number} is already in contacts`);
     }
 
-    dispatch(addNewContact({ ...values, id: nanoid() }));
+    dispatch(addNewContact({ ...values }));
+    navigate('/');
+
     toast.success(
       <div>
         <b>{values.name}</b> added in phonebook
@@ -59,28 +63,26 @@ export const ContactsForm = () => {
       >
         <StyledForm autoComplete="off">
           <InputWrapper>
-            <PersonOutlineIcon sx={{ fontSize: 36 }} />
+            <PersonOutlineIcon />
             <Field
               as={TextField}
               label="Name"
               name="name"
               multiline
               variant="standard"
-              style={{ width: '300px' }}
               className="fieldName"
             />
           </InputWrapper>
           <ErrorMessage name="name" component="span" style={{ color: 'red' }} />
 
           <InputWrapper>
-            <PhoneEnabledIcon sx={{ fontSize: 36 }} />
+            <PhoneEnabledIcon />
             <Field
               as={PatternFormat}
               customInput={TextField}
               name="number"
               variant="standard"
-              style={{ width: '300px' }}
-              format="+63 (###) ### ## ##"
+              format="+## (###) ### ## ##"
               allowEmptyFormatting={true}
               mask="_"
             />
