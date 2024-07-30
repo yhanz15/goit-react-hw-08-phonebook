@@ -12,12 +12,7 @@ export const StyledForm = styled(Form)`
     width: 100%;
   }
 
-  svg {
-    width: 28px;
-    height: 28px;
-  }
-
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     div > div {
       width: 300px;
     }
@@ -34,7 +29,7 @@ export const Wrapper = styled.div`
   font-weight: 500;
   padding: 10px;
 
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     width: 500px;
   }
 `;
@@ -54,18 +49,26 @@ export const Button = styled.button`
   border-radius: 50%;
   border: none;
   background: transparent;
-  text-align: center;
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${props => props.theme.colors.addContact.icon};
   cursor: pointer;
-  transition: transform 250ms ease-in-out, color 250ms ease-in-out;
 
-  &:hover {
-    color: #47a76a;
-    transform: scale(1.1);
+  svg {
+    transition: transform 250ms ease-in-out, color 250ms ease-in-out;
+    width: 40px;
+    height: 40px;
+    &:hover {
+      color: ${props => props.theme.colors.addContact.hover};
+
+      transform: scale(1.08);
+    }
+
+    &:active {
+      color: ${props => props.theme.colors.addContact.hover};
+      transform: scale(1.08);
+    }
   }
 
-  &:active {
-    color: #47a76a;
-    transform: scale(1.1);
+  @media screen and (min-width: ${props => props.theme.media.m}) {
+    margin-left: 160px;
   }
 `;

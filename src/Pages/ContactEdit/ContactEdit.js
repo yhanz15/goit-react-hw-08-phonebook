@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { selectCurrentContact } from 'redux/selectors';
+import { selectCurrentContact } from 'redux/contacts/selectors';
 import {
   StyledForm,
   Wrapper,
@@ -9,13 +9,17 @@ import {
   InputWrapper,
 } from './ContactEdit.styled';
 import { ErrorMessage, Field, Formik } from 'formik';
+import { ThemeProvider } from '@mui/material/styles';
 import * as Yup from 'yup';
 import { PatternFormat } from 'react-number-format';
-import { TextField } from '@mui/material';
+import { TextField, createTheme } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
 import toast from 'react-hot-toast';
-import { editContact } from 'redux/thunk';
+import { editContact } from 'redux/contacts/thunk';
+import { grey } from '@mui/material/colors';
+import { useMemo } from 'react';
+import { selectTheme } from 'redux/userTheme/slice';
 
 const ContactsSchema = Yup.object().shape({
   name: Yup.string().required('* Name is required'),
@@ -24,6 +28,7 @@ const ContactsSchema = Yup.object().shape({
 
 const ContactEdit = () => {
   const { id } = useParams();
+  const userTheme = useSelector(selectTheme);
   const currentContact = useSelector(state =>
     selectCurrentContact(state, { id })
   );
@@ -41,8 +46,6 @@ const ContactEdit = () => {
 
     dispatch(editContact(updatedContact));
 
-    navigate(-1);
-
     toast.success(
       <div>
         Contact <b>{values.name}</b> updated!
@@ -52,7 +55,47 @@ const ContactEdit = () => {
         icon: '✅',
       }
     );
+    navigate(-1);
   };
+
+  // MUI Theme
+  const mode = userTheme;
+  let theme = useMemo(() => {
+    return createTheme({
+      palette: {
+        mode: mode,
+        primary: {
+          main: 'rgb(32, 139, 74)',
+          ...(mode === 'dark' && {
+            main: 'rgb(49, 189, 126)',
+          }),
+        },
+        secondary: {
+          main: 'rgb(105, 105, 105)',
+          ...(mode === 'dark' && {
+            main: '#fff',
+          }),
+        },
+        ...(mode === 'dark' && {
+          background: {
+            default: '#101d2b',
+            paper: '#101d2b',
+          },
+        }),
+        text: {
+          ...(mode === 'light'
+            ? {
+                primary: grey[900],
+                secondary: grey[800],
+              }
+            : {
+                primary: '#fff',
+                secondary: grey[500],
+              }),
+        },
+      },
+    });
+  }, [mode]);
 
   return (
     <Wrapper>
@@ -62,38 +105,44 @@ const ContactEdit = () => {
         onSubmit={handleSubmit}
       >
         <StyledForm autoComplete="off">
-          <InputWrapper>
-            <PersonOutlineIcon />
-            <Field
-              as={TextField}
-              label="Name"
+          <ThemeProvider theme={theme}>
+            <InputWrapper>
+              <PersonOutlineIcon color="secondary" />
+              <Field
+                as={TextField}
+                label="Name"
+                name="name"
+                multiline
+                variant="standard"
+                className="fieldName"
+              />
+            </InputWrapper>
+            <ErrorMessage
               name="name"
-              multiline
-              variant="standard"
-              className="fieldName"
+              component="span"
+              style={{ color: 'red' }}
             />
-          </InputWrapper>
-          <ErrorMessage name="name" component="span" style={{ color: 'red' }} />
 
-          <InputWrapper>
-            <PhoneEnabledIcon />
-            <Field
-              as={PatternFormat}
-              customInput={TextField}
+            <InputWrapper>
+              <PhoneEnabledIcon color="secondary" />
+              <Field
+                as={PatternFormat}
+                customInput={TextField}
+                name="number"
+                variant="standard"
+                format="+38 (0##) ### ## ##"
+                allowEmptyFormatting={true}
+                mask="_"
+              />
+            </InputWrapper>
+            <ErrorMessage
               name="number"
-              variant="standard"
-              format="+38 (0##) ### ## ##"
-              allowEmptyFormatting={true}
-              mask="_"
+              component="span"
+              style={{ color: 'red' }}
             />
-          </InputWrapper>
-          <ErrorMessage
-            name="number"
-            component="span"
-            style={{ color: 'red' }}
-          />
 
-          <Button type="submit">Edit</Button>
+            <Button type="submit">Edit</Button>
+          </ThemeProvider>
         </StyledForm>
       </Formik>
     </Wrapper>

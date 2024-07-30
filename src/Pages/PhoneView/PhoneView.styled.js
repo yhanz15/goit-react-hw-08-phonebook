@@ -8,6 +8,7 @@ export const DetailsWrapper = styled.div`
   flex-direction: column;
   gap: 15px;
   padding: 15px;
+  color: ${props => props.theme.colors.header.text};
 
   h2 {
     font-size: 18px;

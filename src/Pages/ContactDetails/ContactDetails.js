@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef } from 'react';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectContactById } from 'redux/selectors';
+
 import {
   BackBtn,
   AvatarWrapper,
@@ -16,22 +16,21 @@ import {
 } from './ContactDetails.styled';
 import { TbArrowBackUp } from 'react-icons/tb';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { getContactById, removeContact } from 'redux/thunk';
-import CircularProgress from '@mui/material/CircularProgress';
+import { getAllContactsThunk, removeContact } from 'redux/contacts/thunk';
+import { selectContacts } from 'redux/contacts/selectors';
+import { Loader } from 'components/Loader/Loader';
 
 const ContactDetails = () => {
   const location = useLocation();
+  const allContacts = useSelector(selectContacts);
   const { id } = useParams();
-
-  const currentContact = useSelector(selectContactById);
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const currentContact = allContacts.find(contact => contact.id === id);
 
   useEffect(() => {
-    dispatch(getContactById(id));
-  }, [dispatch, id]);
-
-  const navigate = useNavigate();
+    dispatch(getAllContactsThunk());
+  }, [dispatch]);
 
   const backLinkLocation = useRef(location.state?.from ?? '/');
 
@@ -49,18 +48,7 @@ const ContactDetails = () => {
   };
 
   if (!currentContact) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          marginTop: '100px',
-        }}
-      >
-        <div style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-          <CircularProgress color="success" />
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
@@ -94,20 +82,7 @@ const ContactDetails = () => {
       <hr style={{ marginTop: '20px', marginBottom: '40px' }} />
 
       <div>
-        <Suspense
-          fallback={
-            <div
-              style={{
-                display: 'flex',
-                marginTop: '100px',
-              }}
-            >
-              <div style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                <CircularProgress color="success" />
-              </div>
-            </div>
-          }
-        >
+        <Suspense fallback={<Loader />}>
           <Outlet />
         </Suspense>
       </div>

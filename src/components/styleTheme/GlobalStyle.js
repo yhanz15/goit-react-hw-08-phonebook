@@ -7,11 +7,14 @@ body {
   font-family: "DM Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-	background: ${({ theme }) => theme.colors.white};
+	background: #ffffff;
 	margin: 0;
-	color: ${({ theme }) => theme.colors.textPrimary};
-  
+	color: #696969;
   }
+
+#root {
+background-color: rgb(32, 44, 56);
+}
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -40,4 +43,7 @@ img {
     max-width: 100%;
     height: auto;
 }
+
+
+
 `;

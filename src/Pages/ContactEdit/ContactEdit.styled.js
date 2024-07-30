@@ -17,7 +17,7 @@ export const StyledForm = styled(Form)`
     height: 28px;
   }
 
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     div > div {
       width: 300px;
     }
@@ -34,7 +34,7 @@ export const Wrapper = styled.div`
   font-weight: 500;
   padding: 10px;
 
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     width: 500px;
   }
 `;
@@ -57,13 +57,15 @@ export const Button = styled.button`
   border: none;
   outline: none;
   cursor: pointer;
-  transition: box-shadow 250ms ease-in-out;
+  transition: box-shadow 250ms ease-in-out, opacity 250ms ease-in-out;
 
   &:hover {
-    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 0px 8px -2px ${props => props.theme.colors.btns.shadow};
+    opacity: 0.9;
   }
 
   &:active {
-    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 0px 8px -2px ${props => props.theme.colors.btns.shadow};
+    opacity: 0.9;
   }
 `;

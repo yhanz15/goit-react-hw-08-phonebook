@@ -7,13 +7,13 @@ export const TopContent = styled.div`
   flex-direction: column;
   padding-top: 30px;
 
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     flex-direction: row;
   }
 `;
 
 export const BackBtn = styled(Link)`
-  color: #696969;
+  color: ${props => props.theme.colors.header.text};
   transition: color 250ms ease-in-out;
 
   &:hover {
@@ -31,7 +31,7 @@ export const AvatarWrapper = styled.div`
   gap: 10px;
   flex-direction: column;
 
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     flex-direction: row;
     gap: 25px;
   }
@@ -42,7 +42,7 @@ export const Avatar = styled.div`
   gap: 20px;
   margin-right: 40px;
 
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     gap: 15px;
     margin-right: 0px;
   }
@@ -51,8 +51,9 @@ export const Avatar = styled.div`
 export const Name = styled.h2`
   font-size: 24px;
   margin-bottom: 12px;
+  color: ${props => props.theme.colors.header.text};
 
-  @media screen and (min-width: 767px) {
+  @media screen and (min-width: ${props => props.theme.media.m}) {
     font-size: 32px;
     margin-bottom: 0;
   }
@@ -85,14 +86,16 @@ export const EditButton = styled.button`
   color: #fff;
   cursor: pointer;
   border: none;
-  transition: box-shadow 250ms ease-in-out;
+  transition: box-shadow 250ms ease-in-out, opacity 250ms ease-in-out;
 
   &:hover {
-    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 0px 8px -2px ${props => props.theme.colors.btns.shadow};
+    opacity: 0.9;
   }
 
   &:active {
-    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 0px 8px -2px ${props => props.theme.colors.btns.shadow};
+    opacity: 0.9;
   }
 `;
 
@@ -105,14 +108,16 @@ export const RemoveButton = styled.button`
   color: #fff;
   cursor: pointer;
   border: none;
-  transition: box-shadow 250ms ease-in-out;
+  transition: box-shadow 250ms ease-in-out, opacity 250ms ease-in-out;
 
   &:hover {
-    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 0px 8px -2px ${props => props.theme.colors.btns.shadow};
+    opacity: 0.9;
   }
 
   &:active {
-    box-shadow: -1px 0px 8px -2px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 0px 8px -2px ${props => props.theme.colors.btns.shadow};
+    opacity: 0.9;
   }
 `;
 

@@ -16,8 +16,11 @@ import {
 } from './ContactsList.styled';
 import Avatar from '@mui/material/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllContactsThunk, removeContact } from 'redux/thunk';
-import { selectTotalContacts, selectFilteredByName } from 'redux/selectors';
+import { getAllContactsThunk, removeContact } from 'redux/contacts/thunk';
+import {
+  selectTotalContacts,
+  selectFilteredByName,
+} from 'redux/contacts/selectors';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
